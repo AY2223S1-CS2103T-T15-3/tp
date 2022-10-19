@@ -25,6 +25,7 @@ import tuthub.logic.commands.exceptions.CommandException;
 import tuthub.model.Model;
 import tuthub.model.tag.Tag;
 import tuthub.model.tutor.Comment;
+import tuthub.model.tutor.CommentList;
 import tuthub.model.tutor.Email;
 import tuthub.model.tutor.Module;
 import tuthub.model.tutor.Name;
@@ -116,11 +117,11 @@ public class EditCommand extends Command {
                 editTutorDescriptor.getTeachingNomination().orElse(tutorToEdit.getTeachingNomination());
         Rating updatedRating =
                 editTutorDescriptor.getRating().orElse(tutorToEdit.getRating());
-        Comment updatedComment = tutorToEdit.getComment();
+        CommentList updatedComments = tutorToEdit.getAllComments();
         Set<Tag> updatedTags = editTutorDescriptor.getTags().orElse(tutorToEdit.getTags());
 
         return new Tutor(updatedName, updatedPhone, updatedEmail,
-            updatedModule, updatedYear, updatedStudentId, updatedComment, updatedTeachingNomination,
+            updatedModule, updatedYear, updatedStudentId, updatedComments, updatedTeachingNomination,
             updatedRating, updatedTags);
     }
 
@@ -155,6 +156,7 @@ public class EditCommand extends Command {
         private StudentId studentId;
         private TeachingNomination teachingNomination;
         private Rating rating;
+        private CommentList comments;
         private Set<Tag> tags;
 
         public EditTutorDescriptor() {}
@@ -172,6 +174,7 @@ public class EditCommand extends Command {
             setStudentId(toCopy.studentId);
             setTeachingNomination(toCopy.teachingNomination);
             setRating(toCopy.rating);
+            setComments(toCopy.comments);
             setTags(toCopy.tags);
         }
 
@@ -247,6 +250,10 @@ public class EditCommand extends Command {
             return Optional.ofNullable(rating);
         }
 
+        public void setComments(CommentList comments) { this.comments = comments; }
+
+        public Optional<CommentList> getComments() { return Optional.ofNullable(comments); }
+
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -286,6 +293,8 @@ public class EditCommand extends Command {
                     && getYear().equals(e.getYear())
                     && getStudentId().equals(e.getStudentId())
                     && getTeachingNomination().equals(e.getTeachingNomination())
+                    // think we need to check for rating also?
+                    && getComments().equals(e.getComments())
                     && getTags().equals(e.getTags());
         }
     }
